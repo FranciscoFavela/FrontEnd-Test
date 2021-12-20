@@ -1,44 +1,47 @@
-// api url
-const api_url = 
-      "https://restcountries.com/v2/name/mexico";
-  
-// Defining async function
-async function getapi(url) {
-    
-    // Storing response
-    const response = await fetch(url);
-    
-    // Storing data in form of JSON
-    var data = await response.json();
-    if (response) {
-        hideloader();
+
+
+    var xhttp =new XMLHttpRequest();
+    var respJSON=[];
+    xhttp.onreadystatechange=function(){
+        if(this.readyState==4 && this.status==200){
+            resp=this.responseText;
+            var respJSON= JSON.parse(resp);
+            html =document.getElementById('list');
+            html.innerHTML="<th >official Name</th> <th>Capital</th>   <th>Region</th> <th>Lenguage</th><th>Population</th> <th>Flag</th> ";
+            console.log(respJSON);
+            
+            for(var i=0;i<respJSON.length;i++){
+                html.innerHTML+=" <tr onclick='ajaxBbox()'><td id="+i+">"+respJSON[i].name.official+"</td> <td id="+i+">"+respJSON[i].capital+"</td> <td id="+i+">"+respJSON[i].region+"</td> <td id="+i+">"+respJSON[i].languages+"</td><td id="+i+">"+respJSON[i].population+"</td>  <td id="+i+"><img src ="+respJSON[i].flags.png+"></img></td> <tr>"
+            }
+        }
     }
-    show(data);
-}
-// Calling that async function
-getapi(api_url);
-  
-// Function to hide the loader
-function hideloader() {
-    document.getElementById('loading').style.display = 'none';
-}
-// Function to hide the loader
-function show(data) {
-    let tab = 
-        `<tr>
-          <th>Name</th>
-          <th>Office</th>
-          <th>Position</th>
-          <th>Salary</th>
-         </tr>`;
+    xhttp.open("GET","https://restcountries.com/v3.1/all",true);
+    xhttp.send();
+
     
-    // Loop to access all rows 
-    for (let r of data.list) {
-        tab += `<tr> 
-    <td>${r.name} </td>
-    <td>${r.capital}</td>        
-</tr>`;
+   
+    function ajaxBbox(){
+        $(document).click(function(event) {
+            var text="";
+            var text = $(event.target).text();
+            
+            console.log(text);
+        
+        var xhttp =new XMLHttpRequest();
+        var respJSON=[];
+        xhttp.onreadystatechange=function(){
+            if(this.readyState==4 && this.status==200){
+                resp=this.responseText;
+                var respJSON= JSON.parse(resp);
+                bootbox.alert(respJSON.extract_html);
+                console.log(respJSON.extract_html);
+            }
+          
+        }
+        
+        xhttp.open("GET","https://en.wikipedia.org/api/rest_v1/page/summary/"+text,true);
+        xhttp.send();
+         
+        
+    });    
     }
-    // Setting innerHTML as tab variable
-    document.getElementById("employees").innerHTML = tab;
-}
